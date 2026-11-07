@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Python Basics – 100 MCQs</title>
+<style>
+:root{--bg:#f4f6fb;--card:#fff;--text:#1f2937;--muted:#6b7280;--accent:#4f46e5;--accent2:#eef2ff;--ok:#16a34a;--okbg:#dcfce7;--bad:#dc2626;--badbg:#fee2e2;--border:#e5e7eb}
+@media(prefers-color-scheme:dark){:root{--bg:#0f172a;--card:#1e293b;--text:#e5e7eb;--muted:#94a3b8;--accent:#818cf8;--accent2:#312e81;--ok:#4ade80;--okbg:#14532d;--bad:#f87171;--badbg:#7f1d1d;--border:#334155}}
+*{box-sizing:border-box}
+body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;background:var(--bg);color:var(--text);line-height:1.5}
+.wrap{max-width:760px;margin:0 auto;padding:20px 16px 60px}
+h1{margin:10px 0 4px;font-size:26px}
+.sub{color:var(--muted);margin:0 0 20px}
+.card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:22px;box-shadow:0 2px 10px rgba(0,0,0,.05)}
+.hidden{display:none}
+label.field{display:block;font-weight:600;margin:14px 0 6px}
+select{width:100%;padding:10px;border-radius:8px;border:1px solid var(--border);background:var(--card);color:var(--text);font-size:15px}
+button{font:inherit;cursor:pointer;border:0;border-radius:10px;padding:11px 20px;background:var(--accent);color:#fff;font-weight:600}
+button.ghost{background:var(--accent2);color:var(--accent)}
+button:disabled{opacity:.45;cursor:not-allowed}
+.row{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
+.top{display:flex;justify-content:space-between;color:var(--muted);font-size:14px;margin-bottom:8px}
+.bar{height:8px;background:var(--border);border-radius:99px;overflow:hidden;margin-bottom:18px}
+.bar>div{height:100%;background:var(--accent);width:0;transition:width .25s}
+.tag{display:inline-block;background:var(--accent2);color:var(--accent);padding:2px 10px;border-radius:99px;font-size:12px;font-weight:600;margin-bottom:10px}
+.q{font-size:19px;font-weight:600;margin:0 0 16px;white-space:pre-wrap}
+.opt{display:flex;gap:10px;width:100%;text-align:left;background:var(--card);color:var(--text);border:2px solid var(--border);margin-bottom:10px;padding:12px 14px;font-weight:500;font-family:ui-monospace,Consolas,monospace;font-size:14.5px}
+.opt:hover:not(:disabled){border-color:var(--accent)}
+.opt .l{font-weight:700;color:var(--accent);flex:none}
+.opt.ok{background:var(--okbg);border-color:var(--ok)}
+.opt.bad{background:var(--badbg);border-color:var(--bad)}
+.opt:disabled{opacity:1;cursor:default}
+.exp{margin-top:10px;padding:12px 14px;border-radius:10px;background:var(--accent2);font-size:14.5px}
+.score{font-size:44px;font-weight:800;color:var(--accent);margin:6px 0}
+.rev{border-top:1px solid var(--border);padding:12px 0;font-size:14.5px}
+.rev b.ok{color:var(--ok)}.rev b.bad{color:var(--bad)}
+.stats{display:flex;gap:12px;flex-wrap:wrap;margin:10px 0}
+.stat{flex:1;min-width:100px;background:var(--accent2);border-radius:10px;padding:10px;text-align:center}
+.stat b{display:block;font-size:22px}
+code{font-family:ui-monospace,Consolas,monospace}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>🐍 Python Basics – 100 MCQs</h1>
+  <p class="sub">Based on your Elaborated Theory Notes (Beginner Level)</p>
+
+  <div id="start" class="card">
+    <label class="field">Choose a part</label>
+    <select id="part"></select>
+    <label class="field">Mode</label>
+    <select id="mode">
+      <option value="seq">In order (as in the notes)</option>
+      <option value="shuffle">Shuffled questions</option>
+    </select>
+    <div class="row"><button id="go">Start Quiz</button></div>
+    <p class="sub" style="margin-top:16px;font-size:14px">Answer options are shuffled every time. You get instant feedback and an explanation after each answer.</p>
+  </div>
+
+  <div id="quiz" class="card hidden">
+    <div class="top"><span id="cnt"></span><span id="sc"></span></div>
+    <div class="bar"><div id="pb"></div></div>
+    <span class="tag" id="tag"></span>
+    <p class="q" id="qt"></p>
+    <div id="opts"></div>
+    <div id="exp" class="exp hidden"></div>
+    <div class="row"><button id="next" disabled>Next →</button><button class="ghost" id="quit">End quiz</button></div>
+  </div>
+
+  <div id="result" class="card hidden">
+    <h2 style="margin:0">Quiz complete</h2>
+    <div class="score" id="rs"></div>
+    <div class="stats" id="stats"></div>
+    <div class="row"><button id="again">Try again</button><button class="ghost" id="wrongOnly">Retry wrong answers</button><button class="ghost" id="home">Home</button></div>
+    <h3>Review</h3>
+    <div id="review"></div>
+  </div>
+</div>
+
+<script>
+// Each item: [part, question, CORRECT, wrong1, wrong2, wrong3, explanation]
+const P1="Part 1 – Foundations",P2="Part 2 – Data & Variables",P3="Part 3 – Strings",P4="Part 4 – Decisions",P5="Part 5 – Loops",P6="Part 6 – Collections",P7="Part 7 – Functions",P8="Part 8 – Tools & Errors";
+const Q=[
+// ---------- PART 1 ----------
+[P1,"What is a program?","A sequence of instructions followed in order","A random collection of words","A piece of computer hardware","A type of memory","A program is a list of steps the computer follows in order."],
+[P1,"Computers at the lowest level work with:","Two states: on and off (1 and 0)","English sentences","Python code directly","Images only","Electrical signals mean only on/off, so languages act as a middle layer."],
+[P1,"Which cycle is described as the real programming skill?","Write → run → read result → fix","Write everything → never run","Copy → paste → submit","Memorise → type → forget","Experts write something small, run it, read the result and fix it."],
+[P1,"'Python is interpreted' means:","Code is translated and run line by line","The whole file is compiled first, then run","Python only works in the REPL","Python needs no syntax","Interpreted languages start running immediately, line by line."],
+[P1,"If line 10 of a script has a runtime error, what happens to lines 1–9?","They run first, then Python stops at line 10","None of them run","They run twice","They are skipped","Python runs top to bottom, so lines 1–9 execute before the error."],
+[P1,"Which statement is true about 'name', 'Name' and 'NAME' in Python?","They are three different names","They are the same name","Only 'name' is allowed","Python ignores capitals","Python is case-sensitive."],
+[P1,"Dynamically typed means:","Python figures out the type from the value","You must declare the type first","Types can never change","Only numbers have types","You never announce a type; Python infers it."],
+[P1,"In Python, indentation is:","A syntax rule that defines blocks","Only a style choice","Ignored by Python","Needed only in comments","Spaces tell Python which lines belong together."],
+[P1,"REPL stands for:","Read–Eval–Print Loop","Run–Execute–Print–Load","Read–Execute–Process–Loop","Repeat–Evaluate–Print–Loop","The REPL runs one line at a time and shows the result."],
+[P1,"In a script file, what does the line  5 + 3  alone display?","Nothing","8","5 + 3","An error","Only print() shows output in a script; the REPL shows results automatically."],
+[P1,"'Syntax' means:","The grammar rules of the language","The speed of the program","The meaning of the program","The name of a variable","print \"hi\" is wrong because of syntax, not idea."],
+[P1,"Which keywords all need a colon (:) at the end of their line?","if, for, while, def","print, input, len","import, from, as","int, str, float","Forgetting the colon is a very common SyntaxError."],
+[P1,"print(\"5\" + \"3\") outputs:","53","8","5 3","Error","+ joins strings, so the text '5' and '3' become '53'."],
+[P1,"print(\"Age:\", 20) outputs:","Age: 20","Age:20","\"Age:\" 20","Error","The comma makes print add a space between items."],
+[P1,"What does print(\"a\", end=\" \") do?","Ends with a space instead of a new line","Prints a twice","Prints the word end","Causes an error","end= changes what is printed after the text."],
+[P1,"After  x = print(\"hi\")  x equals:","None","\"hi\"","0","An empty string","print shows a value but returns None."],
+[P1,"A comment in Python starts with:","#","//","/*","--","Everything after # on that line is ignored."],
+// ---------- PART 2 ----------
+[P2,"After  x = 5  then  x = x + 1  the value of x is:","6","5","1","Error","The right side (5+1) is computed first, then stored back in x."],
+[P2,"In Python, = means:","Assignment (store a value)","Equality comparison","Greater than","Not equal","== compares; = assigns."],
+[P2,"print(y) before y is assigned gives:","NameError","SyntaxError","TypeError","ValueError","At that moment y does not exist yet."],
+[P2,"Which is a valid variable name?","user_name_2","2price","user-name","first name","Names start with a letter/underscore; no hyphens or spaces."],
+[P2,"The Python naming convention is:","snake_case","camelCase only","kebab-case","UPPER-DASH","e.g. total_price, first_name."],
+[P2,"type(2.0) is:","float","int","str","bool","The decimal point decides the type."],
+[P2,"type(\"20\") is:","str","int","float","bool","Quotes make it text."],
+[P2,"True and False are of type:","bool","str","int only","NoneType","Capitalised, unquoted, and type bool."],
+[P2,"\"10\" + \"5\" gives:","\"105\"","15","\"15\"","Error","+ on strings joins them."],
+[P2,"input() always returns:","A string","An integer","A float","A boolean","Even if the user types 20 you get \"20\"."],
+[P2,"int(3.9) gives:","3","4","3.9","Error","int() truncates, it does not round."],
+[P2,"int(\"3.5\") causes:","ValueError","3","4","3.5","Text with a decimal must go through float() first."],
+[P2,"bool(\"\") is:","False","True","None","Error","An empty string is falsy."],
+[P2,"To change a variable using conversion you must:","Store the result, e.g. x = int(x)","Just call int(x)","Use type(x)","Use print(x)","int(x) alone creates a value but x is unchanged."],
+// ---------- operators ----------
+[P2,"10 / 2 gives:","5.0","5","2","Error","/ always gives a float in Python 3."],
+[P2,"-5 // 2 gives:","-3","-2","-2.5","2","Floor division rounds DOWN."],
+[P2,"10 % 3 gives:","1","3","0","3.33","% is the remainder."],
+[P2,"2 ** 3 gives:","8","6","9","5","** is exponentiation."],
+[P2,"\"ab\" * 3 gives:","\"ababab\"","\"ab3\"","Error","6","* repeats strings."],
+[P2,"5 / 0 raises:","ZeroDivisionError","ValueError","TypeError","None","Division by zero is an error."],
+[P2,"2 + 3 * 4 equals:","14","20","24","9","* is done before +."],
+[P2,"Which has the HIGHEST precedence?","** (power)","+","and","==","Order: ** then * / // % then + - then comparisons, not, and, or."],
+// ---------- PART 3 ----------
+[P3,"word = \"Python\"; word[-1] is:","\"n\"","\"P\"","\"o\"","Error","-1 always means the last character."],
+[P3,"\"Python\"[0:3] gives:","\"Pyt\"","\"Pyth\"","\"yth\"","\"Py\"","Start included, stop excluded."],
+[P3,"\"Python\"[::-1] gives:","\"nohtyP\"","\"Python\"","\"Pto\"","Error","A step of -1 reverses the string."],
+[P3,"word = \"Python\"; word[10] causes:","IndexError","Empty string","None","ValueError","Indexing out of range is an error (slicing is not)."],
+[P3,"s = \"hello\"; s.upper(); print(s) shows:","hello","HELLO","None","Error","Strings are immutable; the result was not stored."],
+[P3,"word[0] = \"J\" on a string causes:","TypeError","Changes the first letter","SyntaxError","NameError","Strings are immutable."],
+[P3,"\" hi \".strip() gives:","\"hi\"","\" hi \"","\"hi \"","\" hi\"","strip() removes whitespace from both ends."],
+[P3,"len(\"a b\") is:","3","2","4","1","The space counts as a character."],
+[P3,"\"banana\".count(\"a\") is:","3","2","1","6","count() counts occurrences."],
+[P3,"print(\"Hello {name}\") without the f prints:","Hello {name}","Hello Sara","Error","Hello","Without f, no substitution happens."],
+[P3,"f\"{3.14159:.2f}\" gives:","\"3.14\"","\"3.1\"","\"3.142\"","\"3\"","The .2f format means 2 decimal places."],
+[P3,"\"Age: \" + 20 causes:","TypeError","\"Age: 20\"","ValueError","SyntaxError","You cannot add a string and a number; use str() or an f-string."],
+[P3,"In a string, \\n means:","A new line","A tab","A backslash","The letter n","\\t is tab, \\\\ is a backslash."],
+// ---------- PART 4 ----------
+[P4,"5 == 5.0 gives:","True","False","Error","None","== compares values, not types."],
+[P4,"\"5\" == 5 gives:","False","True","Error","None","Different types are not equal."],
+[P4,"if age = 18:  causes:","SyntaxError","A comparison","True","NameError","You meant ==."],
+[P4,"True and False gives:","False","True","None","Error","and needs BOTH sides True."],
+[P4,"True or False and False gives:","True","False","Error","None","and is done before or."],
+[P4,"With x = 0, why is  x != 0 and 10 / x > 1  safe?","Short-circuit: the division is never reached","Python ignores division by zero","10/0 is allowed","and always skips the right side","The left side is False, so the right is not evaluated."],
+[P4,"Which is the correct compound condition?","age > 18 and age < 65","age > 18 and < 65","age > 18 & < 65","age > 18, < 65","Both sides of and must be complete comparisons."],
+[P4,"The else keyword:","Takes no condition","Needs a condition","Must come first","Can be used many times","else: has nothing before the colon."],
+[P4,"In if / elif / else, how many branches run?","Only one","All true ones","Always two","None","Python stops at the first True."],
+[P4,"If the order is  if score >= 70 ... elif score >= 90 ...  and score is 95, which branch runs?","The first (>= 70)","The second (>= 90)","Both","Neither","95 matches >= 70 first; the stricter condition is never reached."],
+[P4,"To write an empty block that does nothing, use:","pass","skip","null","continue","An empty block is a syntax error without pass."],
+[P4,"Standard Python indentation is:","4 spaces per level","1 space","Mixed tabs and spaces","Any random amount","Do not mix tabs and spaces."],
+[P4,"Which of these is falsy?","[]","\"hi\"","1","-1","Falsy: False, 0, 0.0, \"\", [], {}, None."],
+// ---------- PART 5 ----------
+[P5,"range(5) produces:","0 1 2 3 4","1 2 3 4 5","0 1 2 3 4 5","5 4 3 2 1","Stop is excluded."],
+[P5,"range(5, 0, -1) produces:","5 4 3 2 1","5 4 3 2 1 0","0 1 2 3 4","1 2 3 4 5","A negative step counts down; 0 is excluded."],
+[P5,"The classic cause of an infinite while loop is:","The condition never becomes False","Using range()","Using break","Using indentation","Something in the loop must change the condition."],
+[P5,"break vs continue:","break exits the loop; continue skips to the next round","break skips one round; continue exits","Both exit the loop","Both do nothing","Ask: stop everything, or just skip this one?"],
+[P5,"for i in range(5): if i == 2: continue; print(i)  prints:","0 1 3 4","0 1","0 1 2 3 4","3 4","Only the round with i == 2 is skipped."],
+[P5,"for i in range(2): for j in range(3): print(i, j)  prints how many lines?","6","5","2","3","Total = outer × inner = 2 × 3."],
+[P5,"When is a while loop best?","When the number of repetitions is unknown","When you know the exact count","Only with lists","Never","e.g. keep asking until the password is correct."],
+// ---------- PART 6 ----------
+[P6,"Which statement is TRUE about lists?","They are mutable","They are immutable","They cannot be indexed","They hold only one type","fruits[0] = \"kiwi\" works."],
+[P6,"fruits has 3 items. fruits[3] causes:","IndexError","Last item","None","KeyError","Valid indexes are 0, 1, 2."],
+[P6,"After  nums = nums.append(5)  nums is:","None","[5]","Unchanged","An error","In-place methods return None."],
+[P6,"[1,2,3].append([4,5]) results in:","[1, 2, 3, [4, 5]]","[1, 2, 3, 4, 5]","[4, 5]","Error","append adds ONE item; use extend for many."],
+[P6,"nums.pop() does what by default?","Removes and returns the last item","Removes the first item","Only returns, no removal","Sorts the list","pop(i) removes and returns the item at i."],
+[P6,"sorted(nums) vs nums.sort():","sorted returns a new list; sort changes in place","Both change in place","sorted changes in place","They are identical","sort() returns None."],
+[P6,"Which creates a one-item tuple?","(5,)","(5)","[5]","{5}","(5) is just the number 5."],
+[P6,"point = (3, 5); point[0] = 10 causes:","TypeError","Changes to (10, 5)","SyntaxError","No error","Tuples are immutable."],
+[P6,"Using person[\"city\"] when the key is missing raises:","KeyError","IndexError","None","ValueError","Use person.get(\"city\") to be safe."],
+[P6,"person.get(\"city\", \"N/A\") returns what for a missing key?","\"N/A\"","None","KeyError","\"city\"","get() returns the default instead of an error."],
+[P6,"For a dictionary d, \"name\" in d checks:","Keys","Values","Both","Items","in checks keys, not values."],
+[P6,"print({1, 2, 2, 3}) shows:","{1, 2, 3}","{1, 2, 2, 3}","[1, 2, 3]","Error","Sets remove duplicates."],
+[P6,"{} on its own creates an empty:","Dictionary","Set","List","Tuple","Use set() for an empty set."],
+// ---------- PART 7 ----------
+[P7,"Writing a def block ... :","Defines the function but does NOT run it","Runs it immediately","Calls it twice","Deletes it","Nothing inside runs until you call it."],
+[P7,"To run a function named greet you write:","greet()","greet","def greet","run greet","Without () you only refer to the function."],
+[P7,"In  def add(a, b):  calling  add(2, 3)  — 2 and 3 are:","Arguments","Parameters","Keywords","Defaults","Parameters are the placeholders, arguments the real values."],
+[P7,"def power(base, exp=2): return base ** exp;  power(5) gives:","25","10","125","Error","exp defaults to 2."],
+[P7,"What is the difference between print and return?","print shows a value; return hands it back to the program","They are identical","return shows on screen","print gives the value back","A function that only prints returns None."],
+[P7,"A function with no return statement returns:","None","0","\"\"","An error","x = f() makes x equal None."],
+[P7,"A variable created inside a function is:","Local to that function","Global","Visible everywhere","Permanent","It disappears when the function ends."],
+// ---------- PART 8 ----------
+[P8,"import math  then  math.sqrt(16)  gives:","4.0","4","16","Error","sqrt returns a float."],
+[P8,"Which imports only sqrt?","from math import sqrt","import sqrt","import math.sqrt only","use math","Then you call sqrt(16) directly."],
+[P8,"Using math.pi without importing math gives:","NameError","ValueError","TypeError","0","name 'math' is not defined."],
+[P8,"int(\"abc\") raises:","ValueError","TypeError","NameError","SyntaxError","Right type, wrong value."],
+[P8,"Which traceback line should you read FIRST?","The last line","The first line","The middle line","None","It states the error type and description."],
+[P8,"Best way to handle a user typing text instead of a number:","try: int(...) except ValueError:","A bare except:","Ignore it","Use input() twice","Catch a SPECIFIC error."],
+[P8,"Why avoid a bare  except:  ?","It hides bugs you want to see","It is a syntax error","It is slower","It only catches ValueError","It catches everything, including mistakes."],
+[P8,"Which habit do the notes recommend for output?","Use f-strings","Use only +","Use only %","Avoid print","f\"{name} is {age}\" is clearer than concatenation."]
+];
+
+// ---------- app ----------
+const $=id=>document.getElementById(id);
+const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+const parts=[...new Set(Q.map(q=>q[0]))];
+$("part").innerHTML='<option value="all">All parts ('+Q.length+' questions)</option>'+parts.map(p=>'<option>'+p+' ('+Q.filter(q=>q[0]===p).length+')</option>').join('');
+
+let list=[],idx=0,score=0,answered=false,log=[];
+
+function start(items){
+  list=items;idx=0;score=0;log=[];
+  $("start").classList.add("hidden");$("result").classList.add("hidden");$("quiz").classList.remove("hidden");
+  show();
+}
+function build(){
+  const sel=$("part").value;
+  let items=sel==="all"?Q:Q.filter(q=>sel.startsWith(q[0]));
+  if($("mode").value==="shuffle")items=shuffle(items);
+  return items.map(q=>({part:q[0],q:q[1],correct:q[2],opts:shuffle(q.slice(2,6)),exp:q[6]}));
+}
+function show(){
+  answered=false;const q=list[idx];
+  $("cnt").textContent="Question "+(idx+1)+" / "+list.length;
+  $("sc").textContent="Score: "+score;
+  $("pb").style.width=(idx/list.length*100)+"%";
+  $("tag").textContent=q.part;
+  $("qt").textContent=q.q;
+  $("exp").classList.add("hidden");
+  $("next").disabled=true;
+  $("next").textContent=idx===list.length-1?"Finish ✓":"Next →";
+  $("opts").innerHTML="";
+  q.opts.forEach((o,i)=>{
+    const b=document.createElement("button");b.className="opt";
+    b.innerHTML='<span class="l">'+"ABCD"[i]+'.</span><span></span>';
+    b.lastChild.textContent=o;
+    b.onclick=()=>pick(b,o);
+    $("opts").appendChild(b);
+  });
+}
+function pick(btn,val){
+  if(answered)return;answered=true;
+  const q=list[idx],ok=val===q.correct;
+  if(ok)score++;
+  log.push({q,chosen:val,ok});
+  [...$("opts").children].forEach(b=>{
+    b.disabled=true;
+    const t=b.lastChild.textContent;
+    if(t===q.correct)b.classList.add("ok");
+    else if(b===btn)b.classList.add("bad");
+  });
+  $("exp").textContent=(ok?"✅ Correct. ":"❌ Incorrect. ")+q.exp;
+  $("exp").classList.remove("hidden");
+  $("sc").textContent="Score: "+score;
+  $("next").disabled=false;
+}
+function finish(){
+  $("quiz").classList.add("hidden");$("result").classList.remove("hidden");
+  const total=log.length,pct=total?Math.round(score/total*100):0;
+  $("rs").textContent=score+" / "+total+"  ("+pct+"%)";
+  $("stats").innerHTML='<div class="stat"><b>'+score+'</b>Correct</div><div class="stat"><b>'+(total-score)+'</b>Wrong</div><div class="stat"><b>'+pct+'%</b>Accuracy</div>';
+  $("wrongOnly").disabled=score===total;
+  $("review").innerHTML="";
+  log.forEach((r,i)=>{
+    const d=document.createElement("div");d.className="rev";
+    const h=document.createElement("div");
+    h.innerHTML=(i+1)+'. <b class="'+(r.ok?'ok':'bad')+'">'+(r.ok?'✔':'✘')+'</b> ';
+    h.append(r.q.q);
+    d.appendChild(h);
+    const a=document.createElement("div");a.style.color="var(--muted)";
+    a.textContent=(r.ok?"Your answer: ":"Your answer: "+r.chosen+"  |  Correct: ")+(r.ok?r.chosen:r.q.correct);
+    d.appendChild(a);
+    $("review").appendChild(d);
+  });
+}
+$("go").onclick=()=>start(build());
+$("next").onclick=()=>{if(idx===list.length-1)finish();else{idx++;show()}};
+$("quit").onclick=()=>{if(log.length)finish();else{$("quiz").classList.add("hidden");$("start").classList.remove("hidden")}};
+$("again").onclick=()=>start(build());
+$("wrongOnly").onclick=()=>start(shuffle(log.filter(r=>!r.ok).map(r=>({...r.q,opts:shuffle(r.q.opts)}))));
+$("home").onclick=()=>{$("result").classList.add("hidden");$("start").classList.remove("hidden")};
+</script>
+</body>
+</html>
